@@ -1,10 +1,7 @@
 verify the nova compute:
 
-
-
-
-
-Contrroller:
------------
+Controller:
+```
 . admin-openrc
 openstack compute service list
+```
