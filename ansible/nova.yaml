@@ -1,0 +1,74 @@
+---
+- hosts: nova
+  tasks:
+  - name: install packages
+    apt: 
+      name: "{{ item }}"
+      state: installed
+    with_items:
+      - nova-compute
+
+  - name: count the cpu register
+    shell: grep -c '(vmx|svm)' /proc/cpuinfo
+    register: cpu_count
+
+  - name: /etc/nova/nova.conf  configuration template
+    tempalate:
+      src: /etc/nova/nova.conf 
+      dest: /etc/nova/nova.conf 
+      owner: ---
+      group: ---
+      mode: ---
+      
+  - name:  nova-computeb service up 
+    service:
+      name: nova-compute
+      state: running
+      enable: yes
+
+  - name: controller exectue
+    shell: ". /root/admin-openrc && su -s /bin/sh -c 'nova-manage cell_v2 discover_hosts --verbose' nova"
+    delegate_to: controller
+  
+  # networking configuration
+  - name: neutron-linuxbridge-agent packate install
+    package:
+      name: "{{ item }}"
+      state: installed
+    with_items:
+      - neutron-linuxbridge-agent
+
+  - name: /etc/neutron/neutron.conf configuration template
+    tempalate:  
+      src: /etc/neutron/neutron.conf
+      dest: /etc/neutron/neutron.conf
+      owner: 
+      group:
+      mode:
+
+  - name: /etc/neutron/plugins/ml2/linuxbridge_agent.ini template file
+    tempalate: 
+      src: /etc/neutron/plugins/ml2/linuxbridge_agent.ini
+      dest: /etc/neutron/plugins/ml2/linuxbridge_agent.ini
+      owner: 
+      group:
+      mode: 
+
+  - name: sysctl configuration
+    copy:
+      src: neutron-sysctl.cnf
+      dest: /etc/sysctl.d/neutron.cnf
+      onwer: root
+      group: root
+      mode: 0644
+    notify: systctl reload
+
+  - name: neutron-linuxbridge-agent service up
+    service: 
+      name: neutron-linuxbridge-agent
+      state: running
+      enable: yes
+
+  handlers:
+  - name: sysctl reload 
+    shell: 'sysctl -p'

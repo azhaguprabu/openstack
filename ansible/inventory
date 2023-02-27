@@ -1,0 +1,7 @@
+[controller]
+controller1
+controller2
+
+[nova]
+compute3    public_interface=eth1
+compute4    public_interface=eth1
