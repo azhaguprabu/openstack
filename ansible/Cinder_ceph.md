@@ -99,3 +99,7 @@ inject_key = false
 inject_partition = -2
 live_migration_flag="VIR_MIGRATE_UNDEFINE_SOURCE,VIR_MIGRATE_PEER2PEER,VIR_MIGRATE_LIVE,VIR_MIGRATE_PERSIST_DEST,VIR_MIGRATE_TUNNELLED"
 hw_disk_discard = unmap
+```
+
+Reference Link: https://docs.ceph.com/en/latest/rbd/rbd-openstack/
+https://superuser.openstack.org/articles/ceph-as-storage-for-openstack/
